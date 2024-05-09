@@ -5,7 +5,7 @@
 #include "sensor.h"
 #include "robotException.h"
 
-int sensor::checkSensor() {
+ int sensor::checkSensor() {
 
     //zufällige zahl zwischen 0 und 100
     int state = rand() % 101;
@@ -20,7 +20,7 @@ int sensor::checkSensor() {
         throw CriticalDangerException("sensor.cpp Critical Danger Exception");
         errorState = true;
     }
-    return state;
+    return state, errorState;
 }
 
 //getter

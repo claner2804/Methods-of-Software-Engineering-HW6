@@ -19,7 +19,7 @@ public:
 
     bool getErrorState();
 
-    void reset();
+    virtual void reset();
 
 
 

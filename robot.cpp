@@ -9,8 +9,7 @@
 
 /*
  * Die Klasse Robot repräsentiert den Roboter selber und implementiert die zentrale Steuerung des Roboters.
- *
- *
+ * Sie verwaltet die Motoren und die Sensoren, d.h. sie übernimmt für diese die Object Ownership.
  * Es gibt genau einen Motor, diesen können Sie statisch zur Klasse hinzufügen (als Objektvariable).
  * Die Sensorkonfiguration hingegen ist ständigen Änderungen unterworfen, daher benötigen Sie
  * für deren Verwaltung einen dynamische Datencontainer.
@@ -18,21 +17,27 @@
 
 
 int robot::addSensor(sensor* newSensor) {
-    // Create a shared_ptr from the raw pointer
+    // einen neuen Sensor erstellen und in shared_ptr umwandeln
     std::shared_ptr<sensor> sensorPtr = std::make_shared<sensor>(*newSensor);
 
-    // Add sensor to map
+    // Sensor in map einfügen
     sensors.insert(std::pair<int, std::shared_ptr<sensor>>(sensors.size(), sensorPtr));
 
-    // Return id
+    // ID zurückgeben
     int id = sensors.size() - 1;
     return id;
 }
+
+
+
+
 
 sensor *robot::getSensor(int id) {
     // Get sensor with id
     return sensors.at(id).get();
 }
+
+
 
 void robot::deleteSensor(int id) {
     // Delete sensor with id
@@ -42,9 +47,10 @@ void robot::deleteSensor(int id) {
     sensors[id].reset();
 }
 
+
+
 void robot::eventLoop() {
-
-
+    //TODO: Implementieren Sie die Methode eventLoop
 }
 
 

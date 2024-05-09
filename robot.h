@@ -8,6 +8,7 @@
 #include "sensor.h"
 #include <map>
 #include <memory>
+#include "motor.h"
 
 /*
  * Die Klasse Robot repräsentiert den Roboter selber und implementiert die zentrale Steuerung des Roboters.
@@ -20,8 +21,11 @@
 class robot {
 
 private:
-    //map to store sensors with smart pointers
+    //map für die dynamische Verwaltung der Sensoren
     std::map<int, std::shared_ptr<sensor>> sensors;
+
+    //statischer motor
+    static motor motor;
 
 public:
     int addSensor(sensor* sensor);

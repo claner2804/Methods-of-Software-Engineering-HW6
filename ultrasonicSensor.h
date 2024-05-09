@@ -13,6 +13,10 @@ class ultrasonicSensor : public sensor{
 
 public:
 
+    int checkSensor() override;
+
+    void reset() override;
+
     ultrasonicSensor();
 
     ~ultrasonicSensor();
