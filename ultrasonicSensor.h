@@ -17,11 +17,16 @@ public:
 
     void reset() override;
 
-    ultrasonicSensor();
 
-    ~ultrasonicSensor();
+ ultrasonicSensor() {
+     std::cout << "Konstruktor UltrasonicSensor" << std::endl;
+    }
 
-    void setErrorState();
+
+~ultrasonicSensor() {
+     std::cout << "Destruktor UltrasonicSensor" << std::endl;
+    }
+
 
 
 };

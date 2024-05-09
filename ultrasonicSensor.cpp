@@ -44,14 +44,6 @@ void ultrasonicSensor::reset() {
 
 
 
-ultrasonicSensor::ultrasonicSensor() {
-    std::cout << "Konstruktor UltrasonicSensor" << std::endl;
-}
-
-
-ultrasonicSensor::~ultrasonicSensor() {
-    std::cout << "Destruktor UltrasonicSensor" << std::endl;
-}
 
 
 

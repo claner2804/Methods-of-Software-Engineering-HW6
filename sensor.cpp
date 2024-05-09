@@ -20,7 +20,7 @@
         throw CriticalDangerException("sensor.cpp Critical Danger Exception");
         errorState = true;
     }
-    return state, errorState;
+    return state; //TODO: return errorState;
 }
 
 //getter
