@@ -29,7 +29,8 @@ Lassen Sie aus praktischen Gründen nach jeder Iteration die Event-Loop eine Sek
 Grundlegende Softwarearchitektur
 Die grundlegende Software-Architektur schaut folgendermaßen aus:
 
-grafik.png
+<img width="698" alt="image" src="https://github.com/claner2804/Methods-of-Software-Engineering-HW6/assets/131294860/991b6e6c-13fe-4895-81f5-7007342ee049">
+
 
 Public Interface
 Das im folgenden gegebene öffentliche Interface soll genauso wie angegebene implementiert werden. Sie können dieses auch um weitere Funktionen erweitern, wenn Sie dies für nötig erachten.
