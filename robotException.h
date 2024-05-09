@@ -8,8 +8,10 @@
 #include <stdexcept>
 
 // Basisklasse für alle Exceptions
+// erbt von std::runtime_error
 class RobotException : public std::runtime_error {
 public:
+    //fehlermeldung wird dem Konstruktor übergeben
     explicit RobotException(const std::string &message) : std::runtime_error(message) {
     }
 };
