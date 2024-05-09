@@ -4,10 +4,11 @@
 #include <iostream>
 
 void motor::setSpeed(int speed) {
-    if (speed < 0 || speed > 10) {
-        throw InvalidSpeedException("Speed out of range!");
-    }
-    this->speed = speed;
+     //wenn speed < 0 oder speed > 10, dann InvalidSpeedException werfen
+        if (speed < 0 || speed > 10) {
+            throw InvalidSpeedException("motor::setSpeed Speed out of range!");
+        }
+        this->speed = speed;
 }
 
 int motor::getSpeed() {

@@ -23,6 +23,8 @@
     return state; //TODO: return errorState;
 }
 
+
+
 //getter
 bool sensor::getErrorState() {
     if (errorState) {
@@ -30,6 +32,7 @@ bool sensor::getErrorState() {
     }
     return false;
 }
+
 
 //reset
 void sensor::reset() {

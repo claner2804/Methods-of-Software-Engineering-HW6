@@ -24,6 +24,7 @@ private:
     //map für die dynamische Verwaltung der Sensoren
     std::map<int, std::shared_ptr<sensor>> sensors;
 
+
     //statischer motor
     static motor motor;
 

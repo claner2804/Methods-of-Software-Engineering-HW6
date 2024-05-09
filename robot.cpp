@@ -30,8 +30,6 @@ int robot::addSensor(sensor* newSensor) {
 
 
 
-
-
 sensor *robot::getSensor(int id) {
     // Get sensor with id
     return sensors.at(id).get();

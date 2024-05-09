@@ -19,6 +19,8 @@ int ultrasonicSensor::checkSensor() {
     return rand() % 61;
 }
 
+
+
 void ultrasonicSensor::reset() {
     // 60% Chance auf erfolgreiches Reset
     if (rand() % 10 < 6) {

@@ -18,6 +18,10 @@ public:
     void reset() override;
 
 
+
+
+
+
  ultrasonicSensor() {
      std::cout << "Konstruktor UltrasonicSensor" << std::endl;
     }

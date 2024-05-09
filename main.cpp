@@ -12,7 +12,6 @@
 
 int main() {
 
-    //TODO: makefile erstellen
 
     std::srand(std::time(nullptr));
 
