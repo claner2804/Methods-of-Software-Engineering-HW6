@@ -9,7 +9,8 @@
 
 /*
  * Die Klasse Robot repräsentiert den Roboter selber und implementiert die zentrale Steuerung des Roboters.
- * Sie verwaltet die Motoren und die Sensoren, d.h. sie übernimmt für diese die Object Ownership.
+ *
+ *
  * Es gibt genau einen Motor, diesen können Sie statisch zur Klasse hinzufügen (als Objektvariable).
  * Die Sensorkonfiguration hingegen ist ständigen Änderungen unterworfen, daher benötigen Sie
  * für deren Verwaltung einen dynamische Datencontainer.
@@ -42,6 +43,7 @@ void robot::deleteSensor(int id) {
 }
 
 void robot::eventLoop() {
+
 
 }
 
