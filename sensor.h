@@ -21,6 +21,16 @@ public:
 
     virtual void reset();
 
+    virtual std::string getName() = 0;
+
+    virtual ~sensor() {
+        std::cout << "Destruktor sensor" << std::endl;
+    }
+
+    sensor() {
+
+    }
+
 
 };
 

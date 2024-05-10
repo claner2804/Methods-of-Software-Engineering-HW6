@@ -22,14 +22,18 @@ class robot {
 
 private:
     //map für die dynamische Verwaltung der Sensoren
-    std::map<int, std::shared_ptr<sensor>> sensors;
+    //shared pointer, da robot ownership für Sensoren übernimmt
 
 
     //statischer motor
     static motor motor;
 
 public:
-    int addSensor(sensor* sensor);
+
+    //konatruktor
+    robot();
+
+    int addSensor(const std::shared_ptr<sensor>& sensor);
 
     sensor* getSensor(int id);
 
@@ -38,6 +42,7 @@ public:
     void eventLoop();
 
 
+    std::map<int, std::shared_ptr<sensor>> sensors;
 };
 
 

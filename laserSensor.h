@@ -16,18 +16,21 @@ public:
 
     void reset() override;
 
+    std::string getName() override {
+        return "LaserSensor";
+    }
+
 
 
 
 
 
     laserSensor() {
-        std::cout << "Konstruktor UltrasonicSensor" << std::endl;
     }
 
 
     ~laserSensor() {
-        std::cout << "Destruktor UltrasonicSensor" << std::endl;
+        std::cout << "Destruktor laserSensor" << std::endl;
     }
 
 

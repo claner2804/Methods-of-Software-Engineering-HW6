@@ -6,6 +6,10 @@
 #include <map>
 #include "sensor.h"
 #include <memory>
+#include "motor.h"
+#include <thread>
+#include <algorithm>
+#include "robotException.h"
 
 /*
  * Die Klasse Robot repräsentiert den Roboter selber und implementiert die zentrale Steuerung des Roboters.
@@ -16,14 +20,26 @@
  */
 
 
-int robot::addSensor(sensor* newSensor) {
-    // einen neuen Sensor erstellen und in shared_ptr umwandeln
-    std::shared_ptr<sensor> sensorPtr = std::make_shared<sensor>(*newSensor);
+//statischer motor
+motor robot::motor;
 
-    // Sensor in map einfügen
-    sensors.insert(std::pair<int, std::shared_ptr<sensor>>(sensors.size(), sensorPtr));
+//konatruktor
+robot::robot() {
+    std::cout << "Roboter erstellt!" << std::endl;
+}
 
-    // ID zurückgeben
+
+
+
+
+int robot::addSensor(const std::shared_ptr<sensor>& sensor) {
+    // Füge Sensor hinzu
+    sensors.insert(std::make_pair(sensors.size(), sensor));
+
+    //sensor mit name ausgeben
+    std::cout << "Sensor " << sensor->getName() << " zum Roboter hinzugefügt!" << std::endl;
+
+    // Gebe die ID des Sensors zurück
     int id = sensors.size() - 1;
     return id;
 }
@@ -43,12 +59,106 @@ void robot::deleteSensor(int id) {
 
     //alle ressourcen freigeben
     sensors[id].reset();
+
+    std::cout << "Sensor gelöscht!" << std::endl;
 }
 
+
+/*
+Ablauf Event-Loop
+Die Event-Loop fragt ständig in einer Endlosschleife den Status der Sensoren ab.
+Die Rückgabewerte der Sensoren ist eine Zahl zwischen 0 und 100,
+je nach Schwere der entdeckten Gefahr (0 bedeutet keine Gefahr und 100 bedeutet sehr große Gefahr).
+Nachdem alle Sensoren abgefragt wurden, wird der höchste gemeldete Gefahrenlevel
+ verwendet um die Geschwindigkeit des Motors zu setzen.
+ Zum Beispiel, bei keiner gemeldeten Gefahr kann der Roboter
+ sich mit voller Geschwindigkeit bewegen und beim höchsten Gefahrenlevel
+ nur mit niedrigster Geschwindkeit.
+
+Wenn ein Sensor eine CriticalDangerException wirft, dann soll sofort (d.h. das Abfragen der weiteren Sensoren wird an dieser Stelle unterbrochen) ein Notstopp der Motoren eingeleitet werden.
+
+Nach 3 Iterationen der Event-Loop soll dann wieder zum Normalzustand zurückgekehrt werden.
+
+
+Wenn einer der Sensoren eine InternalErrorException wirft, dann soll aus Sicherheitsgründen auf die niedrigste Geschwindigkeit geschalten werden. Die niedrigste Geschwindigkeit soll so lange aufrechterhalten werden, bis der Sensor erfolgreich mit reset() zurückgesetzt werden konnte (reset() wird für jeden fehlerhaften Sensor nur einmal pro Iteration ausgeführt). Bei Geschwindigkeitsreduktion augrund interner Sensorfehler kann es aber immer noch zur Notabschaltung aufgrund kritischer Gefahr kommen!
+Lassen Sie aus praktischen Gründen nach jeder Iteration die Event-Loop eine Sekunde schlafen (mittels sleep()). Verwenden Sie ausserdem aus praktischen Gründen (um die Korrektur der Klausur zu erleichtern) keine echte Endlosschleife. Stattdessen soll nach 30 Iterationen die "Endlosschleife" beendet werden.
+ */
 
 
 void robot::eventLoop() {
-    //TODO: Implementieren Sie die Methode eventLoop
+
+    std::srand(std::time(nullptr));
+
+    std::cout << "Event-Loop gestartet!" << std::endl;
+
+    // Zähler für Notbremsen
+    int emergencyBrakeCounter = 0;
+
+    // Durchlaufe die Event-Loop 30 Mal
+    for (int i = 1; i <= 30; i++) {
+
+        std::cout << "Iteration " << i << std::endl;
+
+        // Initialisiere den maximalen Gefahrenlevel auf 0
+        int maxDangerLevel = 0;
+
+        // Flag für Notbremse
+        bool emergencyBrake = false;
+
+        // Durchlaufe alle Sensoren
+        for (auto &sensor : sensors) {
+            try {
+
+                std::cout << "Sensor " << sensor.second->getName() << " wird geprüft!" << std::endl;
+
+                // Prüfe den Sensor und speichere den Gefahrenlevel
+                int dangerLevel = sensor.second->checkSensor();
+
+                // Ausgabe des Gefahrenlevels
+                std::cout << "Gefahrenlevel: " << dangerLevel << std::endl;
+
+                // Aktualisiere den maximalen Gefahrenlevel
+                maxDangerLevel = std::max(maxDangerLevel, dangerLevel);
+            } catch (const CriticalDangerException& e) {
+                //ausgabe der Fehlermeldung
+                std::cout << "Ein Kritischer Fehler ist passiert! NOTBREMSE!" << std::endl;
+                // Bei kritischer Gefahr,führe eine Notbremse durch und setze das Notbremse-Flag
+                motor.emergencyBrake();
+                emergencyBrake = true;
+
+                // Breche die Sensorprüfung ab
+                break;
+            } catch (const InternalErrorException& e) {
+                //ausgabe der Fehlermeldung
+                std::cout << "Ein Interner Fehler ist passiert! Geschwindigkeit wird auf Minimum gesetzt!" << std::endl;
+                // Bei internem Sensorfehler, setze die Geschwindigkeit auf das Minimum und setze den Sensor zurück
+                motor.setSpeed(1);
+                sensor.second->reset();
+            }
+        }
+
+        // Wenn eine Notbremse durchgeführt wurde
+        if (emergencyBrake) {
+            // Erhöhe den Notbremsen-Zähler
+            emergencyBrakeCounter++;
+
+            // Wenn 3 Notbremsen durchgeführt wurden
+            if (emergencyBrakeCounter == 3) {
+                std::cout << "3 Notbremsen wurden durchgeführt! Setze zurück!" << std::endl;
+                // Setze alle Sensoren zurück
+                for (auto &sensor : sensors) {
+                    sensor.second->reset();
+                }
+
+                // Setze den Notbremsen-Zähler zurück
+                emergencyBrakeCounter = 0;
+            }
+        } else {
+
+            motor.setSpeed(6);
+        }
+
+        // Lasse die Event-Loop nach jeder Iteration eine Sekunde schlafen
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 }
-
-

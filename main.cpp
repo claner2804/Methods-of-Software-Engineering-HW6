@@ -1,6 +1,6 @@
 #include <iostream>
 #include <memory>
-#include <vector>
+#include <map>
 #include "robotException.h"
 #include "motor.h"
 #include "robot.h"
@@ -12,13 +12,15 @@
 
 int main() {
 
+    // Create robot
+    robot robot;
 
-    std::srand(std::time(nullptr));
+    // Create sensors
+    robot.addSensor(std::make_shared<ultrasonicSensor>());
+    robot.addSensor(std::make_shared<cameraSensor>());
+    robot.addSensor(std::make_shared<laserSensor>());
 
 
-
-
-
-
+    robot.eventLoop();
 
 }

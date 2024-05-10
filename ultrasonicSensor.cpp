@@ -29,6 +29,7 @@ void ultrasonicSensor::reset() {
         errorState = true;
         //wenn reset nicht erfolgreich, dann InternalErrorException werfen
         throw InternalErrorException("ultrasonicSensor::reset Internal Error Exception");
+
     }
 }
 

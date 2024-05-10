@@ -18,17 +18,19 @@ public:
     void reset() override;
 
 
+    std::string getName() override {
+        return "CameraSensor";
+    }
 
 
 
 
     cameraSensor() {
-        std::cout << "Konstruktor UltrasonicSensor" << std::endl;
     }
 
 
     ~cameraSensor() {
-        std::cout << "Destruktor UltrasonicSensor" << std::endl;
+        std::cout << "Destruktor cameraSensor" << std::endl;
     }
 
 

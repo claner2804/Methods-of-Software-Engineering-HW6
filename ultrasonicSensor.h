@@ -17,13 +17,15 @@ public:
 
     void reset() override;
 
+    std::string getName() override {
+        return "UltrasonicSensor";
+    }
 
 
 
 
 
  ultrasonicSensor() {
-     std::cout << "Konstruktor UltrasonicSensor" << std::endl;
     }
 
 
