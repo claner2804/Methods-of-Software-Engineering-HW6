@@ -31,6 +31,6 @@ void laserSensor::reset() {
     } else {
         errorState = true;
         //wenn reset nicht erfolgreich, dann InternalErrorException werfen
-        throw InternalErrorException("ultrasonicSensor::reset Internal Error Exception");
+        throw InternalErrorException("laserSensor::reset Internal Error Exception");
     }
 }

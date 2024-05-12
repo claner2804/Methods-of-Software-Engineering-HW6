@@ -15,10 +15,6 @@ int main() {
     // Create robot
     robot robot;
 
-    // Create sensors
-    robot.addSensor(std::make_shared<ultrasonicSensor>());
-    robot.addSensor(std::make_shared<cameraSensor>());
-    robot.addSensor(std::make_shared<laserSensor>());
 
 
     robot.eventLoop();

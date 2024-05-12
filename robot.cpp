@@ -10,6 +10,9 @@
 #include <thread>
 #include <algorithm>
 #include "robotException.h"
+#include "ultrasonicSensor.h"
+#include "cameraSensor.h"
+#include "laserSensor.h"
 
 /*
  * Die Klasse Robot repräsentiert den Roboter selber und implementiert die zentrale Steuerung des Roboters.
@@ -20,17 +23,21 @@
  */
 
 
-//statischer motor
+//statischer motor erstellen
 motor robot::motor;
 
-//konatruktor
+
+
+//konstruktor
 robot::robot() {
-    std::cout << "Roboter erstellt!" << std::endl;
+    std::cout << "Roboter starten initialisiert... !" << std::endl;
+    std::cout << "Motor gestartet!" << std::endl;
+    addSensor(std::make_shared<ultrasonicSensor>());
+    addSensor(std::make_shared<cameraSensor>());
+    addSensor(std::make_shared<laserSensor>());
+    std::cout << "Roboter erfolgreich gestartet!" << std::endl;
+
 }
-
-
-
-
 
 int robot::addSensor(const std::shared_ptr<sensor>& sensor) {
     // Füge Sensor hinzu
@@ -89,13 +96,17 @@ void robot::eventLoop() {
 
     std::srand(std::time(nullptr));
 
-    std::cout << "Event-Loop gestartet!" << std::endl;
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Event-Loop beginnt!" << std::endl;
 
     // Zähler für Notbremsen
     int emergencyBrakeCounter = 0;
 
     // Durchlaufe die Event-Loop 30 Mal
     for (int i = 1; i <= 30; i++) {
+
+        std::cout << "--------------------------------" << std::endl;
 
         std::cout << "Iteration " << i << std::endl;
 
@@ -109,7 +120,7 @@ void robot::eventLoop() {
         for (auto &sensor : sensors) {
             try {
 
-                std::cout << "Sensor " << sensor.second->getName() << " wird geprüft!" << std::endl;
+                std::cout << " ---> Sensor " << sensor.second->getName() << " wird geprüft!" << std::endl;
 
                 // Prüfe den Sensor und speichere den Gefahrenlevel
                 int dangerLevel = sensor.second->checkSensor();
@@ -125,6 +136,8 @@ void robot::eventLoop() {
                 // Bei kritischer Gefahr,führe eine Notbremse durch und setze das Notbremse-Flag
                 motor.emergencyBrake();
                 emergencyBrake = true;
+                //aktuelle geschwindigkeit ausgeben:
+                std::cout << "Aktuelle Geschwindigkeit: " << motor.getSpeed() << std::endl;
 
                 // Breche die Sensorprüfung ab
                 break;
@@ -133,7 +146,25 @@ void robot::eventLoop() {
                 std::cout << "Ein Interner Fehler ist passiert! Geschwindigkeit wird auf Minimum gesetzt!" << std::endl;
                 // Bei internem Sensorfehler, setze die Geschwindigkeit auf das Minimum und setze den Sensor zurück
                 motor.setSpeed(1);
-                sensor.second->reset();
+
+                //aktuelle geschwindigkeit ausgeben:
+                std::cout << "Aktuelle Geschwindigkeit: " << motor.getSpeed() << std::endl;
+
+                std::cout << "Reset des Sensors..." << std::endl;
+
+                // Versuche den Sensor zurückzusetzen
+                try {
+                    sensor.second->reset();
+                } catch (const InternalErrorException& e) {
+                    // Bei einem weiteren internen Fehler, führe eine Notbremse durch und setze das Notbremse-Flag
+                    motor.emergencyBrake();
+                    emergencyBrake = true;
+                    //aktuelle geschwindigkeit ausgeben:
+                    std::cout << "Aktuelle Geschwindigkeit nach Sensor reset: " << motor.getSpeed() << std::endl;
+
+                    // Breche die Sensorprüfung ab
+                    break;
+                }
             }
         }
 
@@ -147,7 +178,14 @@ void robot::eventLoop() {
                 std::cout << "3 Notbremsen wurden durchgeführt! Setze zurück!" << std::endl;
                 // Setze alle Sensoren zurück
                 for (auto &sensor : sensors) {
-                    sensor.second->reset();
+                    try {
+                        sensor.second->reset();
+                    } catch (const InternalErrorException& e) {
+                        // Bei einem weiteren internen Fehler, führe eine Notbremse durch und setze das Notbremse-Flag
+                        motor.emergencyBrake();
+                        //aktuelle geschwindigkeit ausgeben:
+                        std::cout << "Aktuelle Geschwindigkeit von " << sensor.second->getName() << " nach reset: " << motor.getSpeed() << std::endl;
+                    }
                 }
 
                 // Setze den Notbremsen-Zähler zurück
@@ -155,7 +193,11 @@ void robot::eventLoop() {
             }
         } else {
 
-            motor.setSpeed(6);
+            motor.setSpeed(10);
+
+            // aktuelle geschwindigkeit ausgeben:
+            std::cout << "Aktuelle Geschwindigkeit: " << motor.getSpeed() << std::endl;
+
         }
 
         // Lasse die Event-Loop nach jeder Iteration eine Sekunde schlafen

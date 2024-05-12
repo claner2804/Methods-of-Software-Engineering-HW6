@@ -31,7 +31,7 @@ void cameraSensor::reset() {
     } else {
         errorState = true;
         //wenn reset nicht erfolgreich, dann InternalErrorException werfen
-        throw InternalErrorException("ultrasonicSensor::reset Internal Error Exception");
+        throw InternalErrorException("cameraSensor::reset Internal Error Exception");
     }
 }
 

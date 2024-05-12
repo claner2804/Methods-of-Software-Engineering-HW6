@@ -18,20 +18,22 @@
  * für deren Verwaltung einen dynamische Datencontainer.
  */
 
+class ultrasonicSensor;
+class cameraSensor;
+class laserSensor;
+
 class robot {
 
 private:
-    //map für die dynamische Verwaltung der Sensoren
-    //shared pointer, da robot ownership für Sensoren übernimmt
 
-
-    //statischer motor
-    static motor motor;
+        //statischer motor
+        static motor motor;
 
 public:
 
-    //konatruktor
+    //konstruktor
     robot();
+
 
     int addSensor(const std::shared_ptr<sensor>& sensor);
 

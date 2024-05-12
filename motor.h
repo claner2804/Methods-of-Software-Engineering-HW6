@@ -15,6 +15,12 @@ public:
     int getSpeed();
     void emergencyBrake();
 
+    //konstruktor
+    motor() = default;
+
+    //destruktor
+    ~motor() = default;
+
 };
 
 
